@@ -10,6 +10,6 @@ public interface IBookingRepository
     Task<IEnumerable<Booking>> GetMyBookingsAsync(string UserId);
     Task<Booking> CreateAsync(Booking booking);
     Task<Booking> UpdateAsync(Booking booking);
-    Task<string> CancelBookingAsync(string UserId, bool isAdmin, int BookingId);
+    Task<string> CancelBookingAsync(string UserId, int BookingId, bool isAdmin = false);
     Task<bool> DeleteAsync(int BookingId);
 }

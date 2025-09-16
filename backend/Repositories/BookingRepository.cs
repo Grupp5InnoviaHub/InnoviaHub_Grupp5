@@ -52,7 +52,7 @@ public class BookingRepository : IBookingRepository
         return booking;
     }
 
-    public async Task<string> CancelBookingAsync(string UserId, bool isAdmin, int BookingId)
+    public async Task<string> CancelBookingAsync(string UserId, int BookingId, bool isAdmin = false)
     {
         var booking = _context.Bookings
         .Include(b => b.Resource)

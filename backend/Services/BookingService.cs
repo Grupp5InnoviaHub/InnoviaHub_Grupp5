@@ -84,10 +84,15 @@ namespace backend.Services
             return created;
         }
 
-    public async Task<Booking> UpdateAsync(Booking booking)
-    {
-        return await _repository.UpdateAsync(booking);
-    }
+        public async Task<Booking> UpdateAsync(Booking booking)
+        {
+            var updated = await _repository.UpdateAsync(booking);
+            if (updated != null)
+            {
+                await _hubContext.Clients.All.SendAsync("BookingUpdated", updated);
+            }
+            return updated;
+        }
 
         public async Task<string> CancelBookingAsync(string UserId, bool isAdmin, int BookingId)
         {
@@ -101,7 +106,7 @@ namespace backend.Services
                 resource.IsBooked = false;
             }
 
-            var result = await _repository.CancelBookingAsync(UserId, isAdmin, BookingId);
+            var result = await _repository.CancelBookingAsync(UserId, BookingId, isAdmin);
             await _context.SaveChangesAsync();
 
             // Skicka SignalR-event

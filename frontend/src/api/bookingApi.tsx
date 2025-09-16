@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Get all bookings for admin/overview
 export async function fetchBookings(token: string): Promise<Booking[]> {
-  const res = await fetch(`${BASE_URL}/api/booking`, {
+  const res = await fetch(`${BASE_URL}/api/bookings`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Kunde inte hämta bokningar");
@@ -14,7 +14,7 @@ export async function fetchBookings(token: string): Promise<Booking[]> {
 
 // Get all bookings for logged in user
 export async function fetchMyBookings(token: string): Promise<Booking[]> {
-  const res = await fetch(`${BASE_URL}/api/booking/my`, {
+  const res = await fetch(`${BASE_URL}/api/bookings/myBookings`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Kunde inte hämta mina bokningar");
@@ -24,7 +24,7 @@ export async function fetchMyBookings(token: string): Promise<Booking[]> {
 //Creates a booking for a resource, currently set for now -> 1 hour.
 //Can change so input manually is possible.
 export async function createBooking(token: string, resourceId: number) {
-  const res = await fetch(`${BASE_URL}/api/booking`, {
+  const res = await fetch(`${BASE_URL}/api/bookings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export async function createBooking(token: string, resourceId: number) {
 
 // Cancels a booking
 export async function cancelBooking(token: string, bookingId: number) {
-  const res = await fetch(`${BASE_URL}/api/booking/cancel/${bookingId}`, {
+  const res = await fetch(`${BASE_URL}/api/bookings/cancel/${bookingId}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -51,7 +51,7 @@ export async function cancelBooking(token: string, bookingId: number) {
 
 //Deletes a booking
 export async function deleteBooking(token: string, bookingId: number) {
-  const res = await fetch(`${BASE_URL}/api/booking/delete/${bookingId}`, {
+  const res = await fetch(`${BASE_URL}/api/bookings/delete/${bookingId}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
