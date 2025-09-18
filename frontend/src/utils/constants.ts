@@ -63,18 +63,6 @@ export const NAV_ITEMS = [
     icon: 'MdBusiness',
     path: '/admin/resources',
   },
-  {
-    id: 'analytics',
-    label: 'Analytics',
-    icon: 'MdAnalytics',
-    path: '/admin/analytics',
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: 'MdSettings',
-    path: '/admin/settings',
-  },
 ] as const;
 
 // User Roles
@@ -91,30 +79,6 @@ export const TABLE_CONFIG = {
   DEFAULT_SORT_DIRECTION: 'desc' as const,
 } as const;
 
-// Chart Colors
-export const CHART_COLORS = {
-  PRIMARY: '#3B82F6',
-  SECONDARY: '#8B5CF6',
-  SUCCESS: '#10B981',
-  WARNING: '#F59E0B',
-  ERROR: '#EF4444',
-  INFO: '#06B6D4',
-  GRAY: '#6B7280',
-} as const;
-
-// Chart Color Palette
-export const CHART_PALETTE = [
-  '#3B82F6', // Blue
-  '#8B5CF6', // Purple
-  '#10B981', // Green
-  '#F59E0B', // Orange
-  '#EF4444', // Red
-  '#06B6D4', // Cyan
-  '#84CC16', // Lime
-  '#F97316', // Orange
-  '#EC4899', // Pink
-  '#6366F1', // Indigo
-] as const;
 
 // Status Colors
 export const STATUS_COLORS = {

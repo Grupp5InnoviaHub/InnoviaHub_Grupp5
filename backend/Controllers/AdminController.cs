@@ -294,15 +294,42 @@ namespace backend.Controllers
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-                return NotFound("User not found");
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                    return NotFound(new ApiResponseDto<object>
+                    {
+                        Success = false,
+                        Message = "User not found"
+                    });
 
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                    return BadRequest(new ApiResponseDto<object>
+                    {
+                        Success = false,
+                        Message = "Failed to delete user",
+                        Errors = result.Errors.Select(e => e.Description).ToList()
+                    });
 
-            return Ok(new { message = "User deleted successfully" });
+                return Ok(new ApiResponseDto<object>
+                {
+                    Success = true,
+                    Message = "User deleted successfully",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user {UserId}", id);
+                return StatusCode(500, new ApiResponseDto<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while deleting the user",
+                    Errors = new List<string> { ex.Message }
+                });
+            }
         }
 
         [HttpGet("roles")]

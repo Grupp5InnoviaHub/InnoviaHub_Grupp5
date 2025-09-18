@@ -226,10 +226,12 @@ export const useDeleteUser = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiService.deleteUser(id);
-      if (!response.success) {
+      // Handle both ApiResponse format and simple message format
+      if (response.success === false) {
         throw new Error(response.message);
       }
-      return response.data;
+      // If success is true or undefined (for simple message format), consider it successful
+      return response.data ?? response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -288,11 +290,11 @@ export const useUpdateUserStatus = () => {
 };
 
 // Resource Hooks
-export const useResources = () => {
+export const useResources = (page: number = 1, pageSize: number = 100) => {
   return useQuery({
-    queryKey: queryKeys.resources,
+    queryKey: [...queryKeys.resources, page, pageSize],
     queryFn: async () => {
-      const response = await apiService.getResources();
+      const response = await apiService.getResources(page, pageSize);
       if (!response.success) {
         throw new Error(response.message);
       }
@@ -430,16 +432,18 @@ export const useCancelBooking = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await apiService.cancelBooking(id);
-      if (!response.success) {
-        throw new Error(response.message);
+    mutationFn: async (bookingId: number) => {
+      const response = await apiService.cancelBooking(bookingId);
+      // Backend returns string "Success" on success
+      if (response === "Success") {
+        return response;
       }
-      return response.data;
+      // If it's an error response
+      throw new Error(response || 'Failed to cancel booking');
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, bookingId) => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.booking(variables) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.booking(bookingId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
       toast.success('Booking cancelled successfully');
     },

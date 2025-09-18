@@ -143,24 +143,6 @@ export interface CreateResourceTypeForm {
   name: string;
 }
 
-// Chart Data Types
-export interface ChartData {
-  name: string;
-  value: number;
-  color?: string;
-}
-
-export interface TimeSeriesData {
-  date: string;
-  value: number;
-  label?: string;
-}
-
-export interface PieChartData {
-  name: string;
-  value: number;
-  color: string;
-}
 
 // Navigation Types
 export interface NavItem {

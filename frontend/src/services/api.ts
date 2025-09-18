@@ -190,8 +190,8 @@ class ApiService {
   }
 
   // Resources
-  async getResources(): Promise<ApiResponse<PagedResult<Resource>>> {
-    return this.request<PagedResult<Resource>>('/admin/resources');
+  async getResources(page: number = 1, pageSize: number = 100): Promise<ApiResponse<PagedResult<Resource>>> {
+    return this.request<PagedResult<Resource>>(`/admin/resources?page=${page}&pageSize=${pageSize}`);
   }
 
   async getResourceById(id: number): Promise<ApiResponse<Resource>> {
@@ -232,7 +232,9 @@ class ApiService {
           { resourceTypeId: 3, name: 'VRset' },
           { resourceTypeId: 4, name: 'AIserver' }
         ],
-        message: 'Using fallback data'
+        message: 'Using fallback data',
+        errors: [],
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -259,10 +261,38 @@ class ApiService {
     return this.request<Booking>(`/admin/bookings/${id}`);
   }
 
-  async cancelBooking(id: number): Promise<ApiResponse<Booking>> {
-    return this.request<Booking>(`/admin/bookings/${id}/cancel`, {
-      method: 'PUT',
-    });
+  async cancelBooking(id: number): Promise<string> {
+    const url = `${API_BASE_URL}/bookings/cancel/${id}`;
+    const token = this.token;
+    
+    const config: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    };
+
+    try {
+      const response = await fetch(url, config);
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          this.clearToken();
+          throw new Error('Unauthorized - Please login again');
+        }
+        
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      // Backend returns string "Success" directly, not JSON
+      const textData = await response.text();
+      return textData;
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
+    }
   }
 
   async getBookingStats(): Promise<ApiResponse<unknown>> {
