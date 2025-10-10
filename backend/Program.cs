@@ -14,10 +14,23 @@ using Scalar.AspNetCore;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Net.Http.Headers;
+using OpenAI;
+using OpenAI.Chat;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+// AI Service
+builder.Services.AddHttpClient("openai", client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com/v1/responses");
+    var apikey = "";
+
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apikey);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+});
 
 builder.Configuration
     .AddEnvironmentVariables();
@@ -33,6 +46,7 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -76,6 +90,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Chaching to save AI memory
+builder.Services.AddMemoryCache();
+
+// Register OpenAI client
+/*builder.Services.AddSingleton<OpenAIClient>(sp =>
+{
+    var apiKey = builder.Configuration["OpenAI:ApiKey"];
+    if (string.IsNullOrEmpty(apiKey))
+    {
+        throw new InvalidOperationException("OpenAI API key is not configured.");
+    }
+    return new OpenAIClient(new OpenAI.Clients.OpenAIClientOptions
+    {
+        ApiKey = apiKey
+    });
+});*/
+
 // Cors implementation for frontend
 builder.Services.AddCors(options =>
 {
@@ -116,6 +147,22 @@ builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
 
 var app = builder.Build();
 
+//AI to retrive database resources
+/*app.MapGet("/ai/summery", async (ApplicationDbContext dbContext, OpenAIClient ai) =>
+{
+    var resources = await dbContext.Resources.ToListAsync();
+    
+    var chat = ai.Chat.GetChatCompleitionsAsync("gpt-4.1", new()
+    {
+        new() { Role = "system", Content = "You are a helpful assistant that helps summarize the following list of resources into a concise summary." },
+        new() { Role = "user", Content = $"Summarize the following list of resources: {JsonSerializer.Serialize(resources)}" }
+    });
+
+    var response = await chat;
+    var summary = response.Choices.FirstOrDefault()?.Message.Content ?? "No summary available.";
+    return Results.Ok(summary);
+});*/
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -125,16 +172,16 @@ if (app.Environment.IsDevelopment())
 
 
 //Seed default roles and users
-//if (!app.Environment.IsEnvironment("CI"))
-//{
-//    using (var scope = app.Services.CreateScope())
-//    {
-//        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-//
-//        await DbSeeder.SeedRolesAndUsersAsync(roleManager, userManager);
-//    }
-//}
+/*if (!app.Environment.IsEnvironment("CI"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        await DbSeeder.SeedRolesAndUsersAsync(roleManager, userManager);
+    }
+}*/
 
 
 // Add middleware

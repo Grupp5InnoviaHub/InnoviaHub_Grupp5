@@ -91,6 +91,7 @@ export default function BookingsPage() {
         setMyBookings(mb);
       } catch {
         toast.error("Could not fetch data");
+        
       } finally {
         setLoading(false);
       }
