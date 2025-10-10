@@ -92,8 +92,9 @@ namespace backend.Services
                 ResourceId = dto.ResourceId,
                 Timeslot = dto.Timeslot
             };
-
+            
             var created = await _repository.CreateAsync(booking);
+            
             await _hubContext.Clients.All.SendAsync("Booking created", created);
             return created;
         }

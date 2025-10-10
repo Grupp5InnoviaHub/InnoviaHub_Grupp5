@@ -1649,6 +1649,38 @@
         }
       }
     },
+    "/api/Chat": {
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Resources": {
       "get": {
         "tags": [
@@ -2299,6 +2331,17 @@
           }
         }
       },
+      "ChatRequest": {
+        "required": [
+          "question"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          }
+        }
+      },
       "CreateResourceDto": {
         "required": [
           "name",
@@ -2759,6 +2802,9 @@
     },
     {
       "name": "Bookings"
+    },
+    {
+      "name": "Chat"
     },
     {
       "name": "Resources"

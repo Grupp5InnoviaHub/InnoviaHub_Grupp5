@@ -9,6 +9,7 @@ public class Booking
     public bool IsActive { get; set; }
     public DateTime BookingDate { get; set; }
     public DateTime EndDate { get; set; }
+    [NotMapped]
     public string Timeslot { get; set; } = default!;
 
     [ForeignKey("UserId")]
