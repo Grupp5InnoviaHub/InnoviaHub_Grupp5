@@ -22,6 +22,9 @@ const Navbar: React.FC = () => {
                 <Link to="/" className="navbar-link">
                     Home
                 </Link>
+                <Link to="/devices" className="navbar-link">
+                    Devices
+                </Link>
                 {token && (
                     <Link to="/bookings" className="navbar-link">
                         Booking

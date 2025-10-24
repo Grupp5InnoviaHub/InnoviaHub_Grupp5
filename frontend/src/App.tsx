@@ -12,6 +12,7 @@ import AdminProtectedRoute from "./components/Admin/AdminProtectedRoute";
 import AdminWrapper from "./components/Admin/AdminWrapper";
 import "./App.css";
 import MyBookings from "./pages/MyBookings";
+import DevicesPage from"./pages/DevicesPage.tsx"
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
@@ -44,6 +45,12 @@ function App() {
                             {" "}
                             <MyBookings />{" "}
                         </ProtectedRoute>
+                    }
+                />
+                <Route 
+                    path="/devices"
+                    element={
+                        <DevicesPage />
                     }
                 />
 
