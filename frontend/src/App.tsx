@@ -12,16 +12,19 @@ import AdminProtectedRoute from "./components/Admin/AdminProtectedRoute";
 import AdminWrapper from "./components/Admin/AdminWrapper";
 import "./App.css";
 import MyBookings from "./pages/MyBookings";
+import DevicesPage from"./pages/DevicesPage.tsx"
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop.tsx";
+import ChatBot from "./components/ChatBot.tsx";
 
 function App() {
     return (
         <div className="App min-h-screen flex flex-col">
             <ScrollToTop />
             <Navbar />
+            <ChatBot />
             <Routes>
                 {/* Main Website Routes */}
                 <Route path="/" element={<LandingPage />} />
@@ -42,6 +45,12 @@ function App() {
                             {" "}
                             <MyBookings />{" "}
                         </ProtectedRoute>
+                    }
+                />
+                <Route 
+                    path="/devices"
+                    element={
+                        <DevicesPage />
                     }
                 />
 

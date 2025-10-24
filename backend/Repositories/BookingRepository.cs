@@ -69,9 +69,9 @@ namespace backend.Repositories
 
         //Create new booking and save to database
         public async Task<Booking> CreateAsync(Booking booking)
-        {
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
+        {            
+            _context.Bookings.Add(booking);            
+            await _context.SaveChangesAsync(); 
             return booking;
         }
 

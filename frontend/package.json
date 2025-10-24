@@ -19,6 +19,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
+    "lucide-react": "^0.545.0",
     "motion": "^12.23.18",
     "react": "^19.1.1",
     "react-calendar": "^6.0.0",
